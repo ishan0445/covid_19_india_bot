@@ -1,10 +1,11 @@
 import bs4, requests, flask
+from flask import request
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
 
-@app.route('/', methods=['GET'])
+@app.route('/', methods=['POST'])
 def getStats():
     # Download page
     getPage = requests.get('https://covidout.in/')
@@ -23,6 +24,10 @@ Hospitalized Cases: {hospitalized}
 In ICU: {icu}
 Recovered Cases: {recovered}
 Deaths: {died}'''
+
+    message = request.get_json()
+    chatID = message['chat'].['id']
+    requests.post(url, json= {"chat_id": chatID, "text": responseText }
     
     return responseText
 
