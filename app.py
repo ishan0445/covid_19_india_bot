@@ -27,6 +27,7 @@ Deaths: {died}'''
 
     url = 'https://api.telegram.org/bot1030632325:AAELjCpYk2F1bupS_a1Fl0loJoA3JjGSQJA/sendMessage'
     message = request.get_json()
+    print(message)
     chatID = message['chat']['id']
     requests.post(url, json= {"chat_id": chatID, "text": responseText })
     
