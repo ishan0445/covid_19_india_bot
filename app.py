@@ -1,4 +1,4 @@
-import bs4, requests, smtplib
+import bs4, requests, flask
 import flask
 
 app = flask.Flask(__name__)
