@@ -54,7 +54,7 @@ def get_stats_statewise():
         if is_number(row[0]):
             rows_states.append(row[1:])
 
-    responseText="\n<b>State Wise Cases in India:</b>\n<b>State / UT | Confirmed(Indians) | Confirmed(Foriegns) | Cured | Death</b>"
+    responseText="<b>State Wise Cases in India:</b>\n<b>State / UT | Confirmed(Indians) | Confirmed(Foriegns) | Cured | Death</b>"
 
     rows = Sort(rows_states)
 
@@ -63,19 +63,54 @@ def get_stats_statewise():
 
     return responseText
 
+def get_help_text():
+    responseText = '''This bot will give latest stats of COVID-19 Cases in India. 
+The data is collected from :
+1) https://covidout.in
+2) https://www.mohfw.gov.in
 
+You can control me bys sending these commands:
+/help - to see this help
+/getFullStats - Get overall and statewise stats
+/getStateWise - get statewise stats
+/getOverall - Get overall stats
+/getHelpline - Get helpline numbers
+'''
+    return responseText
+
+def sendMessage(chatID, responseText):
+    url = 'https://api.telegram.org/bot'+ bot_token +'/sendMessage'
+    requests.post(url, json= {"chat_id": chatID, "text": responseText , "parse_mode":"html"})
+
+def sendPhoto(chatID, responseText):
+    url = 'https://api.telegram.org/bot'+ bot_token +'/sendPhoto'
+    requests.post(url, json= {"chat_id": chatID, "caption": responseText , "parse_mode":"html", "photo":"AgACAgUAAxkBAAPdXndhK8i3FUI7cFv8PfBYnX-bM3AAAuKpMRukLrhX11QX20YEUJD9qCUzAAQBAAMCAANtAAMh3wQAARgE"})
+    
 
 @app.route('/', methods=['POST'])
 def getStats():
-    responseText = get_stats_overall()
-    responseText += "\n\n" + get_stats_statewise()
-
-    url = 'https://api.telegram.org/bot'+ bot_token +'/sendPhoto'
-    message = request.get_json()
-    print(message)
-    chatID = message['message']['chat']['id']
-    requests.post(url, json= {"chat_id": chatID, "caption": responseText , "parse_mode":"html", "photo":"AgACAgUAAxkBAAPdXndhK8i3FUI7cFv8PfBYnX-bM3AAAuKpMRukLrhX11QX20YEUJD9qCUzAAQBAAMCAANtAAMh3wQAARgE"})
     
+    json_data = request.get_json()
+    print(json_data)
+    chatID = json_data['message']['chat']['id']
+    responseText = ''
+      
+    if json_data['message'] == '/getFullStats': 
+        responseText = get_stats_overall()
+        responseText += "\n\n\n" + get_stats_statewise()
+        sendMessage(chatID, responseText)
+    elif json_data['message'] == '/getStateWise':
+        responseText = get_stats_statewise()
+        sendMessage(chatID, responseText)
+    elif json_data['message'] == '/getOverall':
+        responseText = get_stats_overall()
+        sendPhoto(chatID, responseText)
+    elif json_data['message'] == '/getHelpline':
+        sendPhoto(chatID, responseText)
+    else:
+        responseText = get_help_text()
+        sendMessage(chatID, responseText)
+
     return responseText
 
 if __name__ == '__main__':
