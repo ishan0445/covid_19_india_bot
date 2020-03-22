@@ -1,73 +1,59 @@
-import bs4, requests, flask, os
+import requests, flask, os
+from requests_html import HTMLSession
 from flask import request
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 bot_token = os.environ['BOT_TOKEN']
 
-def is_number(s):
-    try:
-        float(s)
-        return True
-    except ValueError:
-        return False
+session = HTMLSession()
+r = session.get('https://www.covid19india.org/')
 
-def Sort(sub_li): 
-    sub_li.sort(key = lambda x: x[1], reverse=True) 
-    return sub_li 
+r.html.render()
 
 def get_stats_overall():
     # Download page
-    getPage = requests.get('https://covidout.in/')
-    getPage.raise_for_status() #if error it will stop the program
+    confirmed = r.html.find('#confvalue')[0].text
+    confirmed_delta = r.html.find('#confirmed_delta')[0].text
 
-    # Parse text for foods
-    html = bs4.BeautifulSoup(getPage.text, 'html.parser')
-    confirmed = html.select('#dashboard > div.number-graph-wrapper > div:nth-child(1) > div > div.card-body.status-confirmed > div.cases-container > h2')[0].text
-    hospitalized = html.select('#dashboard > div.number-graph-wrapper > div:nth-child(2) > div > div.card-body.status-hospitalized > div.cases-container > h2')[0].text
-    icu = html.select('#dashboard > div.number-graph-wrapper > div:nth-child(3) > div > div.card-body.status-icu > div.cases-container > h2')[0].text
-    recovered = html.select('#dashboard > div.number-graph-wrapper > div:nth-child(4) > div > div.card-body.status-recovered > div.cases-container > h2')[0].text
-    died = html.select('#dashboard > div.number-graph-wrapper > div:nth-child(5) > div > div.card-body.status-died > div.cases-container > h2')[0].text
+    recovered = r.html.find('#recoveredvalue')[0].text
+    recovered_delta = r.html.find('#recovered_delta')[0].text
+
+    death = r.html.find('#deathsvalue')[0].text
+    deaths_delta = r.html.find('#deaths_delta')[0].text
+
+    death = r.html.find('#deathsvalue')[0].text
+    deaths_delta = r.html.find('#deaths_delta')[0].text
 
     responseText = f'''<b>Cases in India:</b>
-Confirmed Cases: <b>{confirmed}</b>
-Hospitalized Cases: <b>{hospitalized}</b>
-In ICU: <b>{icu}</b>
-Recovered Cases: <b>{recovered}</b>
-Deaths: <b>{died}</b>'''
+Confirmed Cases: <b>{confirmed} {confirmed_delta}</b>
+Recovered Cases: <b>{recovered} {recovered_delta}</b>
+Deaths: <b>{death} {deaths_delta}</b>'''
 
     return responseText
 
 def get_stats_statewise():
-    getPage = requests.get('https://www.mohfw.gov.in/')
-    getPage.raise_for_status() #if error it will stop the program
-
-    # Parse text for foods
-    soup = bs4.BeautifulSoup(getPage.text, 'html.parser')
-
-    table_rows = soup.find_all('tbody')[1].find_all('tr')
+    table_rows = r.html.find('#prefectures-table > tbody > tr')
     rows_states = []
 
     for tr in table_rows:
-        td = tr.find_all('td')
+        td = tr.find('td')
         row = [i.text for i in td]
-        if is_number(row[0]):
-            rows_states.append(row[1:])
+        rows_states.append(row)
 
-    responseText="<b>State Wise Cases in India:</b>\n<b>State / UT | Confirmed(Indians) | Confirmed(Foriegns) | Cured | Death</b>"
+    responseText = "<b>State Wise Cases in India:</b>\n<b>State / UT | Confirmed | Recovered | Death | Active</b>"
 
-    rows = Sort(rows_states)
 
-    for row in rows:
-        responseText += "\n" + " | ".join(row)
+    for row in rows_states:
+        if len(row) != 0 :
+            responseText += "\n" + " | ".join(row)
 
     return responseText
 
 def get_help_text():
     responseText = '''This bot will give latest stats of COVID-19 Cases in India. 
 The data is collected from :
-1) www.covidout.in
-2) www.mohfw.gov.in
+1) www.covid19india.org/
 
 You can control me by sending these commands:
 /help - to see this help
