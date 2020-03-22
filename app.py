@@ -30,7 +30,7 @@ Deaths: {died}'''
     message = request.get_json()
     print(message)
     chatID = message['message']['chat']['id']
-    requests.post(url, json= {"chat_id": chatID, "text": responseText })
+    requests.post(url, json= {"chat_id": chatID, "text": responseText , "parse_mode"="html"})
     
     return responseText
 
