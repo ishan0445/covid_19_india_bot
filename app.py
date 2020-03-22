@@ -19,7 +19,7 @@ def getStats():
     recovered = html.select('#dashboard > div.number-graph-wrapper > div:nth-child(4) > div > div.card-body.status-recovered > div.cases-container > h2')[0].text
     died = html.select('#dashboard > div.number-graph-wrapper > div:nth-child(5) > div > div.card-body.status-died > div.cases-container > h2')[0].text
 
-    responseText = f'''**Cases in India:**
+    responseText = f'''<b>Cases in India:</b>
 Confirmed Cases: {confirmed}
 Hospitalized Cases: {hospitalized}
 In ICU: {icu}
