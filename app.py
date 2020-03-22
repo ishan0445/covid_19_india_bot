@@ -1,8 +1,9 @@
-import bs4, requests, flask
+import bs4, requests, flask, os
 from flask import request
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
+bot_token = os.environ['BOT_TOKEN']
 
 def is_number(s):
     try:
@@ -69,7 +70,7 @@ def getStats():
     responseText = get_stats_overall()
     responseText += "\n\n" + get_stats_statewise()
 
-    url = 'https://api.telegram.org/bot1030632325:AAELjCpYk2F1bupS_a1Fl0loJoA3JjGSQJA/sendPhoto'
+    url = 'https://api.telegram.org/bot'+ bot_token +'/sendPhoto'
     message = request.get_json()
     print(message)
     chatID = message['message']['chat']['id']
