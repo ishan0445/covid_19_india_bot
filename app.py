@@ -95,17 +95,17 @@ def getStats():
     chatID = json_data['message']['chat']['id']
     responseText = ''
       
-    if json_data['message'] == '/getFullStats': 
+    if json_data['message']['text'] == '/getFullStats': 
         responseText = get_stats_overall()
         responseText += "\n\n\n" + get_stats_statewise()
         sendMessage(chatID, responseText)
-    elif json_data['message'] == '/getStateWise':
+    elif json_data['message']['text'] == '/getStateWise':
         responseText = get_stats_statewise()
         sendMessage(chatID, responseText)
-    elif json_data['message'] == '/getOverall':
+    elif json_data['message']['text'] == '/getOverall':
         responseText = get_stats_overall()
         sendPhoto(chatID, responseText)
-    elif json_data['message'] == '/getHelpline':
+    elif json_data['message']['text'] == '/getHelpline':
         sendPhoto(chatID, responseText)
     else:
         responseText = get_help_text()
