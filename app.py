@@ -53,7 +53,7 @@ def get_stats_statewise():
         if is_number(row[0]):
             rows_states.append(row[1:])
 
-    responseText="<b>State Wise Cases in India:</b>\n\n<b>State / UT | Confirmed(Indians) | Confirmed(Foriegns) | Cured | Death</b>"
+    responseText="\n<b>State Wise Cases in India:</b>\n<b>State / UT | Confirmed(Indians) | Confirmed(Foriegns) | Cured | Death</b>"
 
     rows = Sort(rows_states)
 
