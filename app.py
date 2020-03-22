@@ -19,7 +19,8 @@ def getStats():
     recovered = html.select('#dashboard > div.number-graph-wrapper > div:nth-child(4) > div > div.card-body.status-recovered > div.cases-container > h2')[0].text
     died = html.select('#dashboard > div.number-graph-wrapper > div:nth-child(5) > div > div.card-body.status-died > div.cases-container > h2')[0].text
 
-    responseText = f'''Confirmed Cases: {confirmed}
+    responseText = f'''Cases in India:
+Confirmed Cases: {confirmed}
 Hospitalized Cases: {hospitalized}
 In ICU: {icu}
 Recovered Cases: {recovered}
@@ -28,7 +29,7 @@ Deaths: {died}'''
     url = 'https://api.telegram.org/bot1030632325:AAELjCpYk2F1bupS_a1Fl0loJoA3JjGSQJA/sendMessage'
     message = request.get_json()
     print(message)
-    chatID = message['message']['from']['id']
+    chatID = message['message']['chat']['id']
     requests.post(url, json= {"chat_id": chatID, "text": responseText })
     
     return responseText
