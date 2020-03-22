@@ -69,11 +69,11 @@ def getStats():
     responseText = get_stats_overall()
     responseText += "\n\n" + get_stats_statewise()
 
-    url = 'https://api.telegram.org/bot1030632325:AAELjCpYk2F1bupS_a1Fl0loJoA3JjGSQJA/sendMessage'
+    url = 'https://api.telegram.org/bot1030632325:AAELjCpYk2F1bupS_a1Fl0loJoA3JjGSQJA/sendPhoto'
     message = request.get_json()
     print(message)
     chatID = message['message']['chat']['id']
-    requests.post(url, json= {"chat_id": chatID, "text": responseText , "parse_mode":"html"})
+    requests.post(url, json= {"chat_id": chatID, "caption": responseText , "parse_mode":"html", "photo":"AgACAgUAAxkBAAPdXndhK8i3FUI7cFv8PfBYnX-bM3AAAuKpMRukLrhX11QX20YEUJD9qCUzAAQBAAMCAANtAAMh3wQAARgE"})
     
     return responseText
 
