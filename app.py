@@ -69,10 +69,10 @@ The data is collected from :
 1) www.covidout.in
 2) www.mohfw.gov.in
 
-You can control me bys sending these commands:
+You can control me by sending these commands:
 /help - to see this help
 /getFullStats - Get overall and statewise stats
-/getStateWise - get statewise stats
+/getStateWise - Get statewise stats
 /getOverall - Get overall stats
 /getHelpline - Get helpline numbers
 '''
@@ -95,17 +95,17 @@ def getStats():
     chatID = json_data['message']['chat']['id']
     responseText = ''
       
-    if json_data['message']['text'] == '/getFullStats': 
+    if json_data['message']['text'] == '/get_full_stats': 
         responseText = get_stats_overall()
         responseText += "\n\n\n" + get_stats_statewise()
         sendPhoto(chatID, responseText)
-    elif json_data['message']['text'] == '/getStateWise':
+    elif json_data['message']['text'] == '/get_state_wise':
         responseText = get_stats_statewise()
         sendMessage(chatID, responseText)
-    elif json_data['message']['text'] == '/getOverall':
+    elif json_data['message']['text'] == '/get_overall':
         responseText = get_stats_overall()
         sendMessage(chatID, responseText)
-    elif json_data['message']['text'] == '/getHelpline':
+    elif json_data['message']['text'] == '/get_helpline':
         sendPhoto(chatID, responseText)
     else:
         responseText = get_help_text()
