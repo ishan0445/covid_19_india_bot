@@ -71,10 +71,10 @@ The data is collected from :
 
 You can control me by sending these commands:
 /help - to see this help
-/getFullStats - Get overall and statewise stats
-/getStateWise - Get statewise stats
-/getOverall - Get overall stats
-/getHelpline - Get helpline numbers
+/get_full_stats - Get overall and statewise stats
+/get_state_wise - Get statewise stats
+/get_overall - Get overall stats
+/get_helpline - Get helpline numbers
 '''
     return responseText
 
