@@ -66,8 +66,8 @@ def get_stats_statewise():
 def get_help_text():
     responseText = '''This bot will give latest stats of COVID-19 Cases in India. 
 The data is collected from :
-1) https://covidout.in
-2) https://www.mohfw.gov.in
+1) www.covidout.in
+2) www.mohfw.gov.in
 
 You can control me bys sending these commands:
 /help - to see this help
@@ -98,13 +98,13 @@ def getStats():
     if json_data['message']['text'] == '/getFullStats': 
         responseText = get_stats_overall()
         responseText += "\n\n\n" + get_stats_statewise()
-        sendMessage(chatID, responseText)
+        sendPhoto(chatID, responseText)
     elif json_data['message']['text'] == '/getStateWise':
         responseText = get_stats_statewise()
         sendMessage(chatID, responseText)
     elif json_data['message']['text'] == '/getOverall':
         responseText = get_stats_overall()
-        sendPhoto(chatID, responseText)
+        sendMessage(chatID, responseText)
     elif json_data['message']['text'] == '/getHelpline':
         sendPhoto(chatID, responseText)
     else:
