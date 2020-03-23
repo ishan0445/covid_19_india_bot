@@ -27,6 +27,7 @@ Active Cases: <b>{active}</b>'''
     return responseText
 
 def get_stats_statewise():
+    responseText = ''
     for st in json_statewise['data']['statewise']:
         state = st['state']
         confirmed = st['confirmed']
@@ -34,7 +35,7 @@ def get_stats_statewise():
         deaths = st['deaths']
         active = st['active']
 
-        responseText = str(state) + " | " + str(confirmed) + " | " + str(recovered) + " | " + str(deaths) + " | " + str(active) + "\n"
+        responseText += str(state) + " | " + str(confirmed) + " | " + str(recovered) + " | " + str(deaths) + " | " + str(active) + "\n"
 
     return responseText
 
