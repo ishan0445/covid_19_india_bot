@@ -1,4 +1,5 @@
 import requests, flask, os, json
+from tabulate import tabulate
 from flask import request
 
 app = flask.Flask(__name__)
@@ -25,7 +26,8 @@ Active Cases: <b>{active}</b>'''
 
 def get_stats_statewise(json_statewise):
     print('In method get_stats_statewise():')
-    responseText = '<b>State Wise Cases in India:</b>\n<b>State / UT | Confirmed | Recovered | Deaths | Active</b>\n'
+    responseText = '<b>State Wise Cases in India:</b>\n<b>STATE • CNFM • RCVD • DETH • ACTV</b>\n'
+    respList = []
     for st in json_statewise['data']['statewise']:
         state = st['state']
         confirmed = st['confirmed']
@@ -34,8 +36,8 @@ def get_stats_statewise(json_statewise):
         active = st['active']
 
         if confirmed != 0:
-            responseText += state + " | " + str(confirmed) + " | " + str(recovered) + " | " + str(deaths) + " | " + str(active) + "\n"
-
+            respList.append([state, str(confirmed), str(recovered), str(deaths), str(active)] )
+    responseText += tabulate(respList, tablefmt='plain')
     return responseText
 
 def get_help_text():
