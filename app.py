@@ -6,7 +6,7 @@ app.config["DEBUG"] = True
 bot_token = os.environ['BOT_TOKEN']
 
 
-def get_stats_overall():
+def get_stats_overall(json_statewise):
     # Download page
     confirmed = json_statewise['data']['total']['confirmed']
     recovered = json_statewise['data']['total']['recovered']
@@ -22,7 +22,7 @@ Active Cases: <b>{active}</b>'''
 
     return responseText
 
-def get_stats_statewise():
+def get_stats_statewise(json_statewise):
     responseText = ''
     for st in json_statewise['data']['statewise']:
         state = st['state']
@@ -71,14 +71,14 @@ def getStats():
     responseText = ''
       
     if json_data['message']['text'] == '/get_full_stats': 
-        responseText = get_stats_overall()
-        responseText += "\n\n\n" + get_stats_statewise()
+        responseText = get_stats_overall(json_statewise)
+        responseText += "\n\n\n" + get_stats_statewise(json_statewise)
         sendPhoto(chatID, responseText)
     elif json_data['message']['text'] == '/get_state_wise':
-        responseText = get_stats_statewise()
+        responseText = get_stats_statewise(json_statewise)
         sendMessage(chatID, responseText)
     elif json_data['message']['text'] == '/get_overall':
-        responseText = get_stats_overall()
+        responseText = get_stats_overall(json_statewise)
         sendMessage(chatID, responseText)
     elif json_data['message']['text'] == '/get_helpline':
         sendPhoto(chatID, responseText)
