@@ -5,10 +5,6 @@ app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 bot_token = os.environ['BOT_TOKEN']
 
-url = 'https://api.rootnet.in/covid19-in/unofficial/covid19india.org/statewise'
-resp = requests.get(url)
-json_statewise = resp.json()
-
 
 def get_stats_overall():
     # Download page
@@ -64,6 +60,10 @@ def sendPhoto(chatID, responseText):
 
 @app.route('/', methods=['POST'])
 def getStats():
+
+    url = 'https://api.rootnet.in/covid19-in/unofficial/covid19india.org/statewise'
+    resp = requests.get(url)
+    json_statewise = resp.json()
     
     json_data = request.get_json()
     print(json_data)
