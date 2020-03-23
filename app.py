@@ -145,13 +145,16 @@ Status: {status}
 @app.route('/', methods=['POST'])
 def getStats():
     print('In method getStats():')
+    json_data = request.get_json()
+    print(json_data)
+    chatID = json_data['message']['chat']['id']
+    if chatID == -1001146733372: 
+        return 'Blocked!!!'
     url = 'https://api.rootnet.in/covid19-in/unofficial/covid19india.org/statewise'
     resp = requests.get(url)
     json_statewise = resp.json()
     
-    json_data = request.get_json()
-    print(json_data)
-    chatID = json_data['message']['chat']['id']
+    
     responseText = ''
     
     command = json_data['message']['text'].lower()
