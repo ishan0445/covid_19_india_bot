@@ -58,12 +58,29 @@ You can control me by sending these commands:
 '''
     return responseText
 
-def sendMessage(chatID, responseText):
+def splitResponse(responseText):
+    respList = responseText.split('\n\n')
+    
+    n = 10
+    final = [respList[i * n:(i + 1) * n] for i in range((len(respList) + n - 1) // n )]
+
+    return final
+
+
+
+def sendMessage(chatID, responseText, do_split):
     print('In method sendMessage():')
     url = 'https://api.telegram.org/bot'+ bot_token +'/sendMessage'
-    resp = requests.post(url, json= {"chat_id": chatID, "text": responseText , "parse_mode":"html"})
+    if do_split:
+        listResponse = splitResponse(responseText)
+        
+        for l in listResponse:
+            newResp = '\n\n'.join(l)
+            resp = requests.post(url, json= {"chat_id": chatID, "text": newResp , "parse_mode":"html"})
+    else:
+        resp = requests.post(url, json= {"chat_id": chatID, "text": responseText , "parse_mode":"html"})
     print(resp.json())
-    
+
 def sendPhoto(chatID, responseText):
     print('In method sendPhoto:')
     url = 'https://api.telegram.org/bot'+ bot_token +'/sendPhoto'
@@ -141,10 +158,10 @@ def getStats():
         sendPhoto(chatID, responseText)
     elif command == '/get_state_wise':
         responseText = get_stats_statewise(json_statewise)
-        sendMessage(chatID, responseText)
+        sendMessage(chatID, responseText, False)
     elif command == '/get_overall':
         responseText = get_stats_overall(json_statewise)
-        sendMessage(chatID, responseText)
+        sendMessage(chatID, responseText, False)
     elif command == '/get_helpline':
         sendPhoto(chatID, responseText)
     elif command.startswith('/patients_from_city') or command.startswith('/pfc'):
@@ -158,7 +175,7 @@ def getStats():
 
         if not responseText.strip():
             responseText = 'No data for state: ' + city
-        sendMessage(chatID, responseText)
+        sendMessage(chatID, responseText, True)
     elif command.startswith('/patients_from_state')  or command.startswith('/pfs'):
         cmd_split = command.strip().split(' ',1)
         state = ''
@@ -169,10 +186,10 @@ def getStats():
             responseText = 'invalid command!!'
         if not responseText.strip():
             responseText = 'No data for state: ' + state
-        sendMessage(chatID, responseText)
+        sendMessage(chatID, responseText, True)
     else:
         responseText = get_help_text()
-        sendMessage(chatID, responseText)
+        sendMessage(chatID, responseText, False)
 
     return responseText
 
