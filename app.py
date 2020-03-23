@@ -148,8 +148,8 @@ def getStats():
     json_data = request.get_json()
     print(json_data)
     chatID = json_data['message']['chat']['id']
-    if chatID == -1001146733372 or chatID == -1001263158724: 
-        return 'Blocked!!!'
+    if chatID < 0 :
+        return 'Blocked groups!!!'
     url = 'https://api.rootnet.in/covid19-in/unofficial/covid19india.org/statewise'
     resp = requests.get(url)
     json_statewise = resp.json()
