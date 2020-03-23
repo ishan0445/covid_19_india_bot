@@ -50,8 +50,11 @@ You can control me by sending these commands:
 /get_state_wise - Get statewise stats
 /get_overall - Get overall stats
 /get_helpline - Get helpline numbers
-/patients_from_state state_name - Get patients details
-/patients_from_city city_name - Get patients details
+
+/patients_from_state state_name - Get patients details for a state
+/pfs state_name - Short for command /patients_from_state
+/patients_from_city city_name - Get patients details for a city
+/pfc city_name - Short for command /patients_from_city
 '''
     return responseText
 
@@ -142,7 +145,7 @@ def getStats():
         sendMessage(chatID, responseText)
     elif command == '/get_helpline':
         sendPhoto(chatID, responseText)
-    elif command.startswith('/patients_from_city'):
+    elif command.startswith('/patients_from_city') or command.startswith('/pfc'):
         cmd_split = command.strip().split(' ',1)
         city = ''
         if len(cmd_split) == 2:
@@ -154,7 +157,7 @@ def getStats():
         if not responseText.strip():
             responseText = 'No data for state: ' + city
         sendMessage(chatID, responseText)
-    elif command.startswith('/patients_from_state'):
+    elif command.startswith('/patients_from_state')  or command.startswith('/pfs'):
         cmd_split = command.strip().split(' ',1)
         state = ''
         if len(cmd_split) == 2:
