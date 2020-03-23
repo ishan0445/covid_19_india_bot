@@ -61,12 +61,14 @@ You can control me by sending these commands:
 def sendMessage(chatID, responseText):
     print('In method sendMessage():')
     url = 'https://api.telegram.org/bot'+ bot_token +'/sendMessage'
-    requests.post(url, json= {"chat_id": chatID, "text": responseText , "parse_mode":"html"})
-
+    resp = requests.post(url, json= {"chat_id": chatID, "text": responseText , "parse_mode":"html"})
+    print(resp.json())
+    
 def sendPhoto(chatID, responseText):
     print('In method sendPhoto:')
     url = 'https://api.telegram.org/bot'+ bot_token +'/sendPhoto'
-    requests.post(url, json= {"chat_id": chatID, "caption": responseText , "parse_mode":"html", "photo":"AgACAgUAAxkBAAPdXndhK8i3FUI7cFv8PfBYnX-bM3AAAuKpMRukLrhX11QX20YEUJD9qCUzAAQBAAMCAANtAAMh3wQAARgE"})
+    resp = requests.post(url, json= {"chat_id": chatID, "caption": responseText , "parse_mode":"html", "photo":"AgACAgUAAxkBAAPdXndhK8i3FUI7cFv8PfBYnX-bM3AAAuKpMRukLrhX11QX20YEUJD9qCUzAAQBAAMCAANtAAMh3wQAARgE"})
+    print(resp.json())
     
 def get_patients_from_city(ct):
     url = 'https://api.rootnet.in/covid19-in/unofficial/covid19india.org'
