@@ -53,8 +53,11 @@ You can control me by sending these commands:
 
 /patients_from_state state_name - Get patients details for a state
 /pfs state_name - Short for command /patients_from_state
+Ex: /pfs Madhya Pradesh
+
 /patients_from_city city_name - Get patients details for a city
 /pfc city_name - Short for command /patients_from_city
+Ex: /pfc Jabalpur
 '''
     return responseText
 
