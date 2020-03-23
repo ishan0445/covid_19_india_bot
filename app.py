@@ -34,7 +34,7 @@ def get_stats_statewise():
         deaths = st['deaths']
         active = st['active']
 
-        responseText += str(state) + " | " + str(confirmed) + " | " + str(recovered) + " | " + str(deaths) + " | " + str(active) + "\n"
+        responseText = str(state) + " | " + str(confirmed) + " | " + str(recovered) + " | " + str(deaths) + " | " + str(active) + "\n"
 
     return responseText
 
