@@ -61,6 +61,8 @@ Ex: /pfs Madhya Pradesh
 /patients_from_city city_name - Get patients details for a city
 /pfc city_name - Short for command /patients_from_city
 Ex: /pfc Jabalpur
+
+Report Bugs: @ishan0445
 '''
     return responseText
 
