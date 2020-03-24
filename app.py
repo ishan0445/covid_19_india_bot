@@ -165,7 +165,7 @@ def getStats():
     if command == '/get_full_stats': 
         responseText = get_stats_overall(json_statewise)
         responseText += "\n\n\n" + get_stats_statewise(json_statewise)
-        sendPhoto(chatID, responseText)
+        sendMessage(chatID, responseText, False)
     elif command == '/get_state_wise':
         responseText = get_stats_statewise(json_statewise)
         sendMessage(chatID, responseText, False)
