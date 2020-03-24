@@ -63,6 +63,7 @@ Ex: /pfs Madhya Pradesh
 Ex: /pfc Jabalpur
 
 Report Bugs: @ishan0445
+made with ❤️ after washing 🧼👐 hands.
 '''
     return responseText
 
