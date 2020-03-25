@@ -192,7 +192,12 @@ def getStats():
             city = cmd_split[1]
             responseText = get_patients_from_city(city)
         else:
-            responseText = 'invalid command!!'
+            responseText = '''invalid command!!
+Try:
+/pfc city
+or
+/patients_from_city city
+'''
 
         if not responseText.strip():
             responseText = 'No data for state: ' + city
@@ -204,7 +209,12 @@ def getStats():
             state = cmd_split[1]
             responseText = get_patients_from_state(state)
         else:
-            responseText = 'invalid command!!'
+            responseText = '''invalid command!!
+Try:
+/pfs state
+or
+/patients_from_state state
+'''
         if not responseText.strip():
             responseText = 'No data for state: ' + state
         sendMessage(chatID, responseText, True)
