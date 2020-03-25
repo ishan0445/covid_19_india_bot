@@ -105,17 +105,21 @@ def get_patients_from_city(ct):
     responseText = ''
 
     for pt in json_patients['data']['rawPatientData']:
-        patientId = str(pt['patientId'])
-        reportedOn = pt['reportedOn']
-        city = pt['city']
-        state = pt['state']
-        status = pt['status']
+        patientId = 'NA' if not pt['patientId'] else pt['patientId']
+        reportedOn = 'NA' if not pt['reportedOn'] else pt['reportedOn']
+        city = 'NA' if not pt['city'] else pt['city']
+        state = 'NA' if not pt['status'] else pt['status']
+        status = 'NA' if not pt['status'] else pt['status']
+        age = 'NA' if not pt['ageEstimate'] else pt['ageEstimate']
+        gender = 'NA' if not pt['gender'] else pt['gender']
 
         if city.lower() == ct.lower() :
             responseText +=f'''Patient ID: {patientId}
 Reported On: {reportedOn}
 City: {city}
 State: {state}
+Age: {age}
+Gender: {gender}
 Status: {status}
 
 '''
@@ -131,17 +135,21 @@ def get_patients_from_state(st):
     responseText = ''
 
     for pt in json_patients['data']['rawPatientData']:
-        patientId = str(pt['patientId'])
-        reportedOn = pt['reportedOn']
-        city = pt['city']
-        state = pt['state']
-        status = pt['status']
+        patientId = 'NA' if not pt['patientId'] else pt['patientId']
+        reportedOn = 'NA' if not pt['reportedOn'] else pt['reportedOn']
+        city = 'NA' if not pt['city'] else pt['city']
+        state = 'NA' if not pt['status'] else pt['status']
+        status = 'NA' if not pt['status'] else pt['status']
+        age = 'NA' if not pt['ageEstimate'] else pt['ageEstimate']
+        gender = 'NA' if not pt['gender'] else pt['gender']
 
         if state.lower() == st.lower() :
             responseText +=f'''Patient ID: {patientId}
 Reported On: {reportedOn}
 City: {city}
 State: {state}
+Age: {age}
+Gender: {gender}
 Status: {status}
 
 '''
