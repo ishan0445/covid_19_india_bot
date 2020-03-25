@@ -138,7 +138,7 @@ def get_patients_from_state(st):
         patientId = 'NA' if not pt['patientId'] else pt['patientId']
         reportedOn = 'NA' if not pt['reportedOn'] else pt['reportedOn']
         city = 'NA' if not pt['city'] else pt['city']
-        state = 'NA' if not pt['state'] else pt['status']
+        state = 'NA' if not pt['state'] else pt['state']
         status = 'NA' if not pt['status'] else pt['status']
         age = 'NA' if not pt['ageEstimate'] else pt['ageEstimate']
         gender = 'NA' if not pt['gender'] else pt['gender']
