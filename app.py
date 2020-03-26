@@ -48,6 +48,35 @@ def get_stats_statewise(json_statewise):
     responseText += '\n</pre>'
     return responseText
 
+def get_stats_district_wise(json_district_wise, state):
+    print('In method get_stats_district_wise():')
+    json_district_wise =  {k.lower(): v for k, v in json_district_wise.items()}
+    if state not in json_district_wise.keys():
+        return ''
+
+    responseText = '<b>Cases in '+state+':</b><pre>\n'
+    respList = []
+    cnfTot = 0
+    recTot = 0
+    detTot = 0
+    for dt in json_district_wise[state]['districtData']:
+        confirmed = json_district_wise[state]['districtData'][dt]['confirmed']
+        cnfTot += confirmed
+        recovered = json_district_wise[state]['districtData'][dt]['recovered']
+        recTot += recovered
+        deaths = json_district_wise[state]['districtData'][dt]['deaths']
+        detTot += deaths
+
+        if confirmed != 0:
+            respList.append([dt.replace(' ', '\n'), confirmed, recovered, deaths] )
+    
+
+    respList = Sort(respList)
+    respList = [['DISTRICT','C', 'R', 'D' ]] + respList + [['Total',cnfTot,recTot,detTot]]
+    responseText += tabulate(respList, tablefmt='grid')
+    responseText += '\n</pre>'
+    return responseText
+
 def get_help_text():
     print('In method get_help_text():')
     responseText = '''This bot will give latest stats of COVID-19 Cases in India. 
@@ -221,6 +250,25 @@ Try:
 /pfs state
 or
 /patients_from_state state
+'''
+        if not responseText.strip():
+            responseText = 'No data for state: ' + state
+        sendMessage(chatID, responseText, True)
+    elif command.startswith('/get_district_wise') or command.startswith('/gdw'):
+        cmd_split = command.strip().split(' ',1)
+        state = ''
+        if len(cmd_split) == 2:
+            url = 'https://api.covid19india.org/state_district_wise.json'
+            resp = requests.get(url)
+            json_district_wise = resp.json()
+            state = cmd_split[1].lower()
+            responseText = get_stats_district_wise(json_district_wise, state)
+        else:
+            responseText = '''invalid command!!
+Try:
+/gwd state
+or
+/get_district_wise state
 '''
         if not responseText.strip():
             responseText = 'No data for state: ' + state
