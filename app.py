@@ -43,7 +43,7 @@ def get_stats_statewise(json_statewise):
     
 
     respList = Sort(respList)
-    respList = [['STATE','CNFM', 'RCVD', 'DTH' ]] + respList
+    respList = [['STATE','C', 'R', 'D' ]] + respList
     responseText += tabulate(respList, tablefmt='grid')
     responseText += '\n</pre>'
     return responseText
