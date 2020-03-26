@@ -26,8 +26,8 @@ Active Cases: <b>{active}</b>'''
 
 def get_stats_statewise(json_statewise):
     print('In method get_stats_statewise():')
-    responseText = '<b>State Wise Cases in India:</b>\n<b>STATE | CNFM | RCVD | DETH</b>\n<pre>'
-    respList = []
+    responseText = '<b>State Wise Cases in India:</b><br><pre>\n'
+    respList = [['STATE','CNFM', 'RCVD', 'DTH' ]]
     for st in json_statewise['data']['statewise']:
         state = st['state']
         confirmed = st['confirmed']
@@ -35,10 +35,10 @@ def get_stats_statewise(json_statewise):
         deaths = st['deaths']
 
         if confirmed != 0:
-            respList.append([state, str(confirmed), str(recovered), str(deaths)] )
+            respList.append([state.replace(' ', '\n'), str(confirmed), str(recovered), str(deaths)] )
     
-    responseText += tabulate(respList, tablefmt='presto')
-    responseText += '</pre>'
+    responseText += tabulate(respList, tablefmt='grid')
+    responseText += '\n</pre>'
     return responseText
 
 def get_help_text():
