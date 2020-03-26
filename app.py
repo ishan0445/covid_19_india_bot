@@ -202,14 +202,14 @@ def getStats():
     json_data = request.get_json()
     print(json_data)
     chatID = ''
-    try:
+    if 'message' in json_data.keys():
         chatID = json_data['message']['chat']['id']
-    except KeyError as ex:
-        return 'Exception Caught' + ex
-    
+    elif 'edited_message' in json_data.keys():
+        chatID = json_data['edited_message']['chat']['id']
     if chatID < 0:
         print('BLOCKED: '+json_data)
         return 'Blocked groups!!!'
+        
     url = 'https://api.rootnet.in/covid19-in/unofficial/covid19india.org/statewise'
     resp = requests.get(url)
     json_statewise = resp.json()
