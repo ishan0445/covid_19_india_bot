@@ -57,22 +57,24 @@ def get_stats_district_wise(json_district_wise, state):
     responseText = '<b>Cases in '+state+':</b><pre>\n'
     respList = []
     cnfTot = 0
-    recTot = 0
-    detTot = 0
+    # recTot = 0
+    # detTot = 0
     for dt in json_district_wise[state]['districtData']:
         confirmed = json_district_wise[state]['districtData'][dt]['confirmed']
         cnfTot += confirmed
-        recovered = json_district_wise[state]['districtData'][dt]['recovered']
-        recTot += recovered
-        deaths = json_district_wise[state]['districtData'][dt]['deaths']
-        detTot += deaths
+        # recovered = json_district_wise[state]['districtData'][dt]['recovered']
+        # recTot += recovered
+        # deaths = json_district_wise[state]['districtData'][dt]['deaths']
+        # detTot += deaths
 
         if confirmed != 0:
-            respList.append([dt.replace(' ', '\n'), confirmed, recovered, deaths] )
+            respList.append([dt.replace(' ', '\n')]) #, confirmed, recovered, deaths] )
     
 
     respList = Sort(respList)
-    respList = [['DISTRICT','C', 'R', 'D' ]] + respList + [['Total',cnfTot,recTot,detTot]]
+    respList = [['DISTRICT','CONFIRMED' ]] + respList + [['Total',cnfTot]]
+    # respList = [['DISTRICT','C', 'R', 'D' ]] + respList + [['Total',cnfTot,recTot,detTot]]
+
     responseText += tabulate(respList, tablefmt='grid')
     responseText += '\n</pre>'
     return responseText
@@ -267,9 +269,9 @@ or
             responseText = 'No data for state: ' + state
         sendMessage(chatID, responseText, True)
     elif command.startswith('/get_district_wise') or command.startswith('/gdw'):
-        responseText = 'Under Maintanance. Use other commands from /help'
-        sendMessage(chatID, responseText, False)
-        return responseText
+        # responseText = 'Under Maintanance. Use other commands from /help'
+        # sendMessage(chatID, responseText, False)
+        # return responseText
         cmd_split = command.strip().split(' ',1)
         state = ''
         if len(cmd_split) == 2:
