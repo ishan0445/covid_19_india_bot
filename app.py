@@ -202,14 +202,17 @@ def getStats():
     json_data = request.get_json()
     print(json_data)
     chatID = ''
+    command = ''
     if 'message' in json_data.keys():
         chatID = json_data['message']['chat']['id']
+        command = json_data['message']['text'].lower()
     elif 'edited_message' in json_data.keys():
         chatID = json_data['edited_message']['chat']['id']
+        command = json_data['edited_message']['text'].lower()
     if chatID < 0:
         print('BLOCKED: '+json_data)
         return 'Blocked groups!!!'
-        
+
     url = 'https://api.rootnet.in/covid19-in/unofficial/covid19india.org/statewise'
     resp = requests.get(url)
     json_statewise = resp.json()
@@ -217,7 +220,7 @@ def getStats():
     
     responseText = ''
     
-    command = json_data['message']['text'].lower()
+    
     if command == '/get_full_stats': 
         responseText = get_stats_overall(json_statewise)
         responseText += "\n\n\n" + get_stats_statewise(json_statewise)
