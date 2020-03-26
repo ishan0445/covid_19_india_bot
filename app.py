@@ -269,9 +269,9 @@ or
             responseText = 'No data for state: ' + state
         sendMessage(chatID, responseText, True)
     elif command.startswith('/get_district_wise') or command.startswith('/gdw'):
-        # responseText = 'Under Maintanance. Use other commands from /help'
-        # sendMessage(chatID, responseText, False)
-        # return responseText
+        responseText = 'Under Maintanance. Use other commands from /help'
+        sendMessage(chatID, responseText, False)
+        return responseText
         cmd_split = command.strip().split(' ',1)
         state = ''
         if len(cmd_split) == 2:
