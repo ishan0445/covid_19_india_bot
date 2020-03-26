@@ -27,7 +27,7 @@ Active Cases: <b>{active}</b>'''
 def get_stats_statewise(json_statewise):
     print('In method get_stats_statewise():')
     responseText = '<b>State Wise Cases in India:</b><pre>\n'
-    respList = [['STATE','CNFM', 'RCVD', 'DTH' ]]
+    respList = [['STATE','C', 'R', 'D' ]]
     for st in json_statewise['data']['statewise']:
         state = st['state']
         confirmed = st['confirmed']
