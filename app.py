@@ -7,6 +7,10 @@ app.config["DEBUG"] = True
 bot_token = os.environ['BOT_TOKEN']
 
 
+def Sort(sub_li):
+    return(sorted(sub_li, key = lambda x: x[1], reverse=True)) 
+
+
 def get_stats_overall(json_statewise):
     print('In method get_stats_overall():')
     # Download page
@@ -26,8 +30,8 @@ Active Cases: <b>{active}</b>'''
 
 def get_stats_statewise(json_statewise):
     print('In method get_stats_statewise():')
-    responseText = '<b>State Wise Cases in India:</b><pre>\n'
-    respList = [['STATE','C', 'R', 'D' ]]
+    responseText = '<b>State Wise Cases in India:</b><br><pre>\n'
+    respList = []
     for st in json_statewise['data']['statewise']:
         state = st['state']
         confirmed = st['confirmed']
@@ -35,8 +39,11 @@ def get_stats_statewise(json_statewise):
         deaths = st['deaths']
 
         if confirmed != 0:
-            respList.append([state.replace(' ', '\n'), str(confirmed), str(recovered), str(deaths)] )
+            respList.append([state.replace(' ', '\n'), confirmed, recovered, deaths] )
     
+
+    respList = Sort(respList)
+    respList = [['STATE','CNFM', 'RCVD', 'DTH' ]] + respList
     responseText += tabulate(respList, tablefmt='grid')
     responseText += '\n</pre>'
     return responseText
