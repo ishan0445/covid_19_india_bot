@@ -98,6 +98,10 @@ Ex: /pfs Madhya Pradesh
 /pfc city_name - Short for command /patients_from_city
 Ex: /pfc Jabalpur
 
+/get_district_wise state - Get district wise stats for a state
+/gdw state - Short for command /get_district_wise
+Ex: /gdw Madhya Pradesh
+
 Report Bugs: @ishan0445
 made with ❤️ after washing 🧼👐 hands.
 '''
@@ -266,7 +270,7 @@ or
         else:
             responseText = '''invalid command!!
 Try:
-/gwd state
+/gdw state
 or
 /get_district_wise state
 '''
