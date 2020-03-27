@@ -80,6 +80,27 @@ def get_stats_district_wise(json_district_wise, state):
     responseText += '\n</pre>'
     return responseText
 
+def get_top_country_stats(limit ,sortBy='cases'):
+    url = 'https://corona.lmao.ninja/countries?sort='+sortBy
+    resp = requests.get(url)
+    json_countries = resp.json()[:limit]
+    responseText = '<b>Top '+str(limit)+' countries by no. of comfirmed cases:</b>\n<pre>\n'
+    respList = []
+    for ct in json_countries:
+        country = ct['country']
+        cases = ct['cases']
+        deaths = ct['deaths']
+
+        respList.append([country.replace(' ', '\n'), cases, deaths])
+
+
+    respList = [['COUNTRY', 'CNFM', 'DTHS']] + respList
+    responseText += tabulate(respList, tablefmt='grid')
+
+    responseText+= '\n</pre>'
+
+    return responseText
+
 def get_help_text():
     print('In method get_help_text():')
     responseText = '''This bot will give latest stats of COVID-19 Cases in India. 
@@ -104,6 +125,8 @@ Ex: /pfc Jabalpur
 /get_district_wise state - Get district wise stats for a state
 /gdw state - Short for command /get_district_wise
 Ex: /gdw Madhya Pradesh
+
+/get_country_stats - Gets top 10 countries by no. of confirmed cases
 
 Report Bugs: @ishan0445
 made with ❤️ after washing 🧼👐 hands.
@@ -291,10 +314,12 @@ or
         if not responseText.strip():
             responseText = 'No data for state: ' + state
         sendMessage(chatID, responseText, True)
+    elif command.startswith('/get_country_stats'):
+        responseText = get_top_country_stats(10, sortBy='cases')
+        sendMessage(chatID,responseText, False)
     else:
         responseText = get_help_text()
         sendMessage(chatID, responseText, False)
-
     return responseText
 
 if __name__ == '__main__':
