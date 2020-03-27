@@ -126,7 +126,7 @@ Ex: /pfc Jabalpur
 /gdw state - Short for command /get_district_wise
 Ex: /gdw Madhya Pradesh
 
-/get_country_stats - Gets top 10 countries by no. of confirmed cases
+/get_country_stats - Gets top 20 countries by no. of confirmed cases
 
 Report Bugs: @ishan0445
 made with ❤️ after washing 🧼👐 hands.
@@ -315,7 +315,7 @@ or
             responseText = 'No data for state: ' + state
         sendMessage(chatID, responseText, True)
     elif command.startswith('/get_country_stats'):
-        responseText = get_top_country_stats(10, sortBy='cases')
+        responseText = get_top_country_stats(20, sortBy='cases')
         sendMessage(chatID,responseText, False)
     else:
         responseText = get_help_text()
