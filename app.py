@@ -84,7 +84,7 @@ def get_top_country_stats(limit ,sortBy='cases'):
     url = 'https://corona.lmao.ninja/countries?sort='+sortBy
     resp = requests.get(url)
     json_countries = resp.json()[:limit]
-    responseText = '<b>Top '+str(limit)+' countries by no. of comfirmed cases:</b>\n<pre>\n'
+    responseText = '<b>Top '+str(limit)+' countries by no. of comfirmed cases:</b>\n<pre>'
     respList = []
     for ct in json_countries:
         country = ct['country']
@@ -105,7 +105,8 @@ def get_help_text():
     print('In method get_help_text():')
     responseText = '''This bot will give latest stats of COVID-19 Cases in India. 
 The data is collected from :
-covid19india.org
+1) covid19india.org
+2) NovelCOVID
 
 You can control me by sending these commands:
 /help - to see this help
