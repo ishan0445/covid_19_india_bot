@@ -13,17 +13,21 @@ def Sort(sub_li):
 
 def get_stats_overall(json_statewise):
     print('In method get_stats_overall():')
-    # Download page
-    confirmed = json_statewise['data']['total']['confirmed']
-    recovered = json_statewise['data']['total']['recovered']
-    deaths = json_statewise['data']['total']['deaths']
-    active = json_statewise['data']['total']['active']
+
+    confirmed = json_statewise['statewise'][0]['confirmed']
+    confirmeddelta = json_statewise['key_values'][0]['confirmeddelta']
+    recovered = json_statewise['statewise'][0]['recovered']
+    recovereddelta = json_statewise['key_values'][0]['recovereddelta']
+    deaths = json_statewise['statewise'][0]['deaths']
+    deceaseddelta = json_statewise['key_values'][0]['deceaseddelta']
+    active = json_statewise['statewise'][0]['active']
+
 
 
     responseText = f'''<b>Cases in India:</b>
-Confirmed Cases: <b>{confirmed}</b>
-Recovered Cases: <b>{recovered}</b>
-Deaths: <b>{deaths}</b>
+Confirmed Cases: <b>{confirmed} [ +{confirmeddelta} ]</b>
+Recovered Cases: <b>{recovered} [ +{recovereddelta} ]</b>
+Deaths: <b>{deaths} [ +{deceaseddelta} ]</b>
 Active Cases: <b>{active}</b>'''
 
     return responseText
@@ -32,11 +36,12 @@ def get_stats_statewise(json_statewise):
     print('In method get_stats_statewise():')
     responseText = '<b>State Wise Cases in India:</b><pre>\n'
     respList = []
-    for st in json_statewise['data']['statewise']:
+    for st in json_statewise['statewise']:
+        if st['state'] == 'Total': continue
         state = st['state']
-        confirmed = st['confirmed']
-        recovered = st['recovered']
-        deaths = st['deaths']
+        confirmed = int(st['confirmed'])
+        recovered = int(st['recovered'])
+        deaths = int(st['deaths'])
 
         if confirmed != 0:
             respList.append([state.replace(' ', '\n'), confirmed, recovered, deaths] )
@@ -223,6 +228,14 @@ Status: {status}
 
     return responseText
 
+
+def get_json_statewise():
+    url = 'https://api.covid19india.org/data.json'
+    resp = requests.get(url)
+    json_statewise = resp.json()
+
+    return json_statewise
+
 @app.route('/', methods=['POST'])
 def getStats():
     print('In method getStats():')
@@ -230,6 +243,8 @@ def getStats():
     print(json_data)
     chatID = ''
     command = ''
+
+    # Handeling message type
     if 'message' in json_data.keys():
         chatID = json_data['message']['chat']['id']
         command = json_data['message']['text'].lower()
@@ -239,23 +254,20 @@ def getStats():
     if chatID < 0:
         print('BLOCKED: '+json_data)
         return 'Blocked groups!!!'
-
-    url = 'https://api.rootnet.in/covid19-in/unofficial/covid19india.org/statewise'
-    resp = requests.get(url)
-    json_statewise = resp.json()
-    
     
     responseText = ''
-    
-    
+  
     if command == '/get_full_stats': 
+        json_statewise = get_json_statewise()
         responseText = get_stats_overall(json_statewise)
         responseText += "\n\n\n" + get_stats_statewise(json_statewise)
         sendMessage(chatID, responseText, False)
     elif command == '/get_state_wise':
+        json_statewise = get_json_statewise()
         responseText = get_stats_statewise(json_statewise)
         sendMessage(chatID, responseText, False)
     elif command == '/get_overall':
+        json_statewise = get_json_statewise()
         responseText = get_stats_overall(json_statewise)
         sendMessage(chatID, responseText, False)
     elif command == '/get_helpline':
