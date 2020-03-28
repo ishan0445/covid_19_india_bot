@@ -4,7 +4,9 @@ from flask import request
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
+
 bot_token = os.environ['BOT_TOKEN']
+chatbase_token = os.environ['CHATBASE_TOKEN']
 
 
 def Sort(sub_li):
@@ -236,6 +238,22 @@ def get_json_statewise():
 
     return json_statewise
 
+
+def send_analitics(command, user_id):
+    requests.post('https://chatbase.com/api/message', json= {
+    "api_key": chatbase_token,
+    "type": "command",
+    "platform": "telegram",
+    "message": f"{command} is called",
+    "intent": "command",
+    "version": "1.1",
+    "user_id": user_id
+    })
+
+
+#--------------
+# API ROUTES
+#--------------
 @app.route('/', methods=['POST'])
 def getStats():
     print('In method getStats():')
@@ -243,17 +261,30 @@ def getStats():
     print(json_data)
     chatID = ''
     command = ''
+    user_id = ''
 
     # Handeling message type
     if 'message' in json_data.keys():
-        chatID = json_data['message']['chat']['id']
-        command = json_data['message']['text'].lower()
+        try:
+            chatID = json_data['message']['chat']['id']
+            command = json_data['message']['text'].lower()
+            user_id = str(json_data['message']['from']['id'])
+        except KeyError:
+            print(f"KeyError Encountered")
+            return ''
     elif 'edited_message' in json_data.keys():
-        chatID = json_data['edited_message']['chat']['id']
-        command = json_data['edited_message']['text'].lower()
+        try:
+            chatID = json_data['edited_message']['chat']['id']
+            command = json_data['edited_message']['text'].lower()
+            user_id = str(json_data['edited_message']['from']['id'])
+        except KeyError:
+            print(f"KeyError Encountered")
+            return ''
     if chatID < 0:
         print('BLOCKED: '+json_data)
         return 'Blocked groups!!!'
+
+    send_analitics(command, user_id)
     
     responseText = ''
   
