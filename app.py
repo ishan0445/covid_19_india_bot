@@ -250,7 +250,7 @@ def send_analitics(command, user_id):
     "user_id": user_id
     })
 
-    print('ChatBase Resp: ' + resp.json())
+    print('ChatBase Resp: ' + str(resp.json()))
 
 
 #--------------
