@@ -240,7 +240,7 @@ def get_json_statewise():
 
 
 def send_analitics(command, user_id):
-    requests.post('https://chatbase.com/api/message', json= {
+    resp = requests.post('https://chatbase.com/api/message', json= {
     "api_key": chatbase_token,
     "type": "command",
     "platform": "telegram",
@@ -249,6 +249,8 @@ def send_analitics(command, user_id):
     "version": "1.1",
     "user_id": user_id
     })
+
+    print('ChatBase Resp: ' + resp.json())
 
 
 #--------------
