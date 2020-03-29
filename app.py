@@ -127,19 +127,12 @@ You can control me by sending these commands:
 /get_overall - Get overall stats
 /get_helpline - Get helpline numbers
 
-/patients_from_state state_name - Get patients details for a state
-/pfs state_name - Short for command /patients_from_state
-Ex: /pfs Madhya Pradesh
-
-/patients_from_city city_name - Get patients details for a city
-/pfc city_name - Short for command /patients_from_city
-Ex: /pfc Jabalpur
-
 /get_district_wise state - Get district wise stats for a state
 /gdw state - Short for command /get_district_wise
 Ex: /gdw Madhya Pradesh
 
 /get_country_stats - Gets top 20 countries by no. of confirmed cases
+
 
 Report Bugs: @ishan0445
 made with ❤️ after washing 🧼👐 hands.
@@ -175,66 +168,6 @@ def sendPhoto(chatID, responseText):
     resp = requests.post(url, json= {"chat_id": chatID, "caption": responseText , "parse_mode":"html", "photo":"AgACAgUAAxkBAAPdXndhK8i3FUI7cFv8PfBYnX-bM3AAAuKpMRukLrhX11QX20YEUJD9qCUzAAQBAAMCAANtAAMh3wQAARgE"})
     print(resp.json())
     
-
-def get_patients_from_city(ct):
-    url = 'https://api.rootnet.in/covid19-in/unofficial/covid19india.org'
-    resp = requests.get(url)
-    json_patients = resp.json()
-
-
-    responseText = ''
-
-    for pt in json_patients['data']['rawPatientData']:
-        patientId = pt.get('reportedOn', 'NA')
-        reportedOn = pt.get('reportedOn','NA')
-        city = pt.get('city','NA')
-        state = pt.get('state','NA')
-        status = pt.get('status','NA')
-        age = pt.get('ageEstimate','NA')
-        gender = pt.get('gender','NA')
-
-        if city.lower() == ct.lower() :
-            responseText +=f'''Patient ID: {patientId}
-Reported On: {reportedOn}
-City: {city}
-State: {state}
-Age: {age}
-Gender: {gender}
-Status: {status}
-
-'''
-
-    return responseText
-
-def get_patients_from_state(st):
-    url = 'https://api.rootnet.in/covid19-in/unofficial/covid19india.org'
-    resp = requests.get(url)
-    json_patients = resp.json()
-
-
-    responseText = ''
-
-    for pt in json_patients['data']['rawPatientData']:
-        patientId = pt.get('reportedOn', 'NA')
-        reportedOn = pt.get('reportedOn','NA')
-        city = pt.get('city','NA')
-        state = pt.get('state','NA')
-        status = pt.get('status','NA')
-        age = pt.get('ageEstimate','NA')
-        gender = pt.get('gender','NA')
-
-        if state.lower() == st.lower() :
-            responseText +=f'''Patient ID: {patientId}
-Reported On: {reportedOn}
-City: {city}
-State: {state}
-Age: {age}
-Gender: {gender}
-Status: {status}
-
-'''
-
-    return responseText
 
 
 def get_json_statewise():
@@ -311,43 +244,7 @@ def getStats():
         sendMessage(chatID, responseText, False)
     elif command == '/get_helpline':
         sendPhoto(chatID, responseText)
-    elif command.startswith('/patients_from_city') or command.startswith('/pfc'):
-        cmd_split = command.strip().split(' ',1)
-        city = ''
-        if len(cmd_split) == 2:
-            city = cmd_split[1]
-            responseText = get_patients_from_city(city)
-        else:
-            responseText = '''invalid command!!
-Try:
-/pfc city
-or
-/patients_from_city city
-'''
-
-        if not responseText.strip():
-            responseText = 'No data for state: ' + city
-        sendMessage(chatID, responseText, True)
-    elif command.startswith('/patients_from_state')  or command.startswith('/pfs'):
-        cmd_split = command.strip().split(' ',1)
-        state = ''
-        if len(cmd_split) == 2:
-            state = cmd_split[1]
-            responseText = get_patients_from_state(state)
-        else:
-            responseText = '''invalid command!!
-Try:
-/pfs state
-or
-/patients_from_state state
-'''
-        if not responseText.strip():
-            responseText = 'No data for state: ' + state
-        sendMessage(chatID, responseText, True)
     elif command.startswith('/get_district_wise') or command.startswith('/gdw'):
-        # responseText = 'Under Maintanance. Use other commands from /help'
-        # sendMessage(chatID, responseText, False)
-        # return responseText
         cmd_split = command.strip().split(' ',1)
         state = ''
         if len(cmd_split) == 2:
