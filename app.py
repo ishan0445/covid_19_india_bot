@@ -177,8 +177,6 @@ def sendPhoto(chatID, responseText):
     
 
 def get_patients_from_city(ct):
-    return under_maintanance()
-
     url = 'https://api.rootnet.in/covid19-in/unofficial/covid19india.org'
     resp = requests.get(url)
     json_patients = resp.json()
@@ -187,13 +185,13 @@ def get_patients_from_city(ct):
     responseText = ''
 
     for pt in json_patients['data']['rawPatientData']:
-        patientId = 'NA' if not pt['patientId'] else pt['patientId']
-        reportedOn = 'NA' if not pt['reportedOn'] else pt['reportedOn']
-        city = 'NA' if not pt['city'] else pt['city']
-        state = 'NA' if not pt['state'] else pt['state']
-        status = 'NA' if not pt['status'] else pt['status']
-        age = 'NA' if not pt['ageEstimate'] else pt['ageEstimate']
-        gender = 'NA' if not pt['gender'] else pt['gender']
+        patientId = pt.get('reportedOn', 'NA')
+        reportedOn = pt.get('reportedOn','NA')
+        city = pt.get('city','NA')
+        state = pt.get('state','NA')
+        status = pt.get('status','NA')
+        age = pt.get('ageEstimate','NA')
+        gender = pt.get('gender','NA')
 
         if city.lower() == ct.lower() :
             responseText +=f'''Patient ID: {patientId}
@@ -209,8 +207,6 @@ Status: {status}
     return responseText
 
 def get_patients_from_state(st):
-    return under_maintanance()
-    
     url = 'https://api.rootnet.in/covid19-in/unofficial/covid19india.org'
     resp = requests.get(url)
     json_patients = resp.json()
@@ -219,13 +215,13 @@ def get_patients_from_state(st):
     responseText = ''
 
     for pt in json_patients['data']['rawPatientData']:
-        patientId = 'NA' if not pt['patientId'] else pt['patientId']
-        reportedOn = 'NA' if not pt['reportedOn'] else pt['reportedOn']
-        city = 'NA' if not pt['city'] else pt['city']
-        state = 'NA' if not pt['state'] else pt['state']
-        status = 'NA' if not pt['status'] else pt['status']
-        age = 'NA' if not pt['ageEstimate'] else pt['ageEstimate']
-        gender = 'NA' if not pt['gender'] else pt['gender']
+        patientId = pt.get('reportedOn', 'NA')
+        reportedOn = pt.get('reportedOn','NA')
+        city = pt.get('city','NA')
+        state = pt.get('state','NA')
+        status = pt.get('status','NA')
+        age = pt.get('ageEstimate','NA')
+        gender = pt.get('gender','NA')
 
         if state.lower() == st.lower() :
             responseText +=f'''Patient ID: {patientId}
