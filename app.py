@@ -9,6 +9,11 @@ bot_token = os.environ['BOT_TOKEN']
 chatbase_token = os.environ['CHATBASE_TOKEN']
 
 
+def under_maintanance():
+    return '''Sorry under maintenance!!! Check back later.
+Meanwhile try other commands from /help
+'''
+
 def Sort(sub_li):
     return(sorted(sub_li, key = lambda x: x[1], reverse=True)) 
 
@@ -170,7 +175,10 @@ def sendPhoto(chatID, responseText):
     resp = requests.post(url, json= {"chat_id": chatID, "caption": responseText , "parse_mode":"html", "photo":"AgACAgUAAxkBAAPdXndhK8i3FUI7cFv8PfBYnX-bM3AAAuKpMRukLrhX11QX20YEUJD9qCUzAAQBAAMCAANtAAMh3wQAARgE"})
     print(resp.json())
     
+
 def get_patients_from_city(ct):
+    return under_maintanance()
+
     url = 'https://api.rootnet.in/covid19-in/unofficial/covid19india.org'
     resp = requests.get(url)
     json_patients = resp.json()
@@ -201,6 +209,8 @@ Status: {status}
     return responseText
 
 def get_patients_from_state(st):
+    return under_maintanance()
+    
     url = 'https://api.rootnet.in/covid19-in/unofficial/covid19india.org'
     resp = requests.get(url)
     json_patients = resp.json()
