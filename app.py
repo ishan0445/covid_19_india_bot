@@ -9,10 +9,7 @@ bot_token = os.environ['BOT_TOKEN']
 chatbase_token = os.environ['CHATBASE_TOKEN']
 
 
-def under_maintanance():
-    return '''Sorry under maintenance!!! Check back later.
-Meanwhile try other commands from /help
-'''
+
 
 def Sort(sub_li):
     return(sorted(sub_li, key = lambda x: x[1], reverse=True)) 
@@ -22,12 +19,13 @@ def get_stats_overall(json_statewise):
     print('In method get_stats_overall():')
 
     confirmed = json_statewise['statewise'][0]['confirmed']
-    confirmeddelta = json_statewise['key_values'][0]['confirmeddelta']
+    confirmeddelta = json_statewise['statewise'][0]['deltaconfirmed']
     recovered = json_statewise['statewise'][0]['recovered']
-    recovereddelta = json_statewise['key_values'][0]['recovereddelta']
+    recovereddelta = json_statewise['statewise'][0]['deltarecovered']
     deaths = json_statewise['statewise'][0]['deaths']
-    deceaseddelta = json_statewise['key_values'][0]['deceaseddelta']
+    deceaseddelta = json_statewise['statewise'][0]['deltadeaths']
     active = json_statewise['statewise'][0]['active']
+
 
 
 
@@ -192,6 +190,9 @@ def send_analitics(command, user_id):
     print('ChatBase Resp: ' + str(resp.json()))
 
 
+def under_maintanance():
+    return '''Sorry under maintenance!!!'''
+    
 #--------------
 # API ROUTES
 #--------------
