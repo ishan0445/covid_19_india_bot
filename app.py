@@ -120,19 +120,19 @@ The data is collected from :
 2) NovelCOVID
 
 You can control me by sending these commands:
-/help - to see this help
-/get_full_stats - Get overall and statewise stats
-/get_state_wise - Get statewise stats
-/get_overall - Get overall stats
-/get_helpline - Get helpline numbers
+/help - to see this help.
+/get_full_stats - Get overall and statewise stats.
+/get_state_wise - Get statewise stats.
+/get_overall - Get overall stats.
+/get_helpline - Get helpline numbers.
 
-/get_district_wise state - Get district wise stats for a state
-/gdw state - Short for command /get_district_wise
+/get_district_wise state - Get district wise stats for a state.
+/gdw state - Short for command /get_district_wise.
 Ex: /gdw Madhya Pradesh
 
-/get_country_stats - Gets top 20 countries by no. of confirmed cases
+/get_country_stats - Gets top 20 countries by no. of confirmed cases.
 
-/get_updates = get latest updates from India
+/get_updates = Get latest updates from India.
 
 
 Report Bugs: @ishan0445
