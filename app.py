@@ -195,7 +195,8 @@ def send_analitics(command, user_id):
 def get_latest_updates():
     url = 'https://api.covid19india.org/updatelog/log.json'
     resp = requests.get(url)
-    json_data = resp.json()[-5:]
+    json_data = resp.json()[-7:]
+    json_data.reverse()
     resonseText = """
 <b>Latest Updates:</b>
 """
