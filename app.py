@@ -1,4 +1,5 @@
-import requests, flask, os, json
+import requests, flask, os, json, timeago
+from datetime import datetime
 from tabulate import tabulate
 from flask import request
 
@@ -189,6 +190,21 @@ def send_analitics(command, user_id):
 
     print('ChatBase Resp: ' + str(resp.json()))
 
+def get_latest_updates():
+    url = 'https://api.covid19india.org/updatelog/log.json'
+    resp = requests.get(url)
+    json_data = resp.json()[-5:]
+    resonseText = """
+<b>Latest Updates:</b>
+"""
+    for el in json_data:
+        now = datetime.now()
+        date = datetime.fromtimestamp(el['timestamp'])
+        ago = timeago.format(date, now)
+        resonseText += el['update'] + "- <i>" + ago + "</i>\n\n"
+
+    return resonseText
+
 
 def under_maintanance():
     return '''Sorry under maintenance!!!'''
@@ -266,6 +282,9 @@ or
         sendMessage(chatID, responseText, True)
     elif command.startswith('/get_country_stats'):
         responseText = get_top_country_stats(20, sortBy='cases')
+        sendMessage(chatID,responseText, False)
+    elif command.startswith('/get_updates'):
+        responseText = get_latest_updates()
         sendMessage(chatID,responseText, False)
     else:
         responseText = get_help_text()
