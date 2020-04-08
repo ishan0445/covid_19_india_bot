@@ -132,6 +132,8 @@ Ex: /gdw Madhya Pradesh
 
 /get_country_stats - Gets top 20 countries by no. of confirmed cases
 
+/get_updates = get latest updates from India
+
 
 Report Bugs: @ishan0445
 made with ❤️ after washing 🧼👐 hands.
