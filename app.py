@@ -29,6 +29,7 @@ def button(update, context):
     query.edit_message_text(text="Selected option: {}".format(query.data))
 
 updater.dispatcher.add_handler(CallbackQueryHandler(button))
+updater.dispatcher.add_handler(CommandHandler('help', help))
 
 updater.start_polling()
 
@@ -243,6 +244,14 @@ def build_menu(buttons,
 
 def under_maintanance():
     return '''Sorry under maintenance!!!'''
+
+
+
+
+def helpNEW(update, context):
+    update.message.reply_text(get_help_text())
+
+updater.dispatcher.add_handler(CommandHandler('help', helpNEW))
     
 #--------------
 # API ROUTES
