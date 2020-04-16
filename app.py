@@ -204,6 +204,17 @@ def get_latest_updates():
 
     return resonseText
 
+def build_menu(buttons,
+               n_cols,
+               header_buttons=None,
+               footer_buttons=None):
+    menu = [buttons[i:i + n_cols] for i in range(0, len(buttons), n_cols)]
+    if header_buttons:
+        menu.insert(0, [header_buttons])
+    if footer_buttons:
+        menu.append([footer_buttons])
+    return menu
+
 
 def under_maintanance():
     return '''Sorry under maintenance!!!'''
@@ -286,12 +297,14 @@ or
         responseText = get_latest_updates()
         sendMessage(chatID,responseText, False)
     elif command.startswith('/test0445'):
-        custom_keyboard = [['top-left', 'top-right'], 
-                   ['bottom-left', 'bottom-right']]
-        reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard)
+        button_list = [
+            telegram.InlineKeyboardButton("col1", callback_data='col1-dta'),
+            telegram.InlineKeyboardButton("col2", callback_data='col2-dta'),
+            telegram.InlineKeyboardButton("row 2", callback_data='row2-dta')
+        ]
+        reply_markup = telegram.InlineKeyboardMarkup(build_menu(button_list, n_cols=2))
         bot.send_message(chat_id=chatID, 
-                 text="Custom Keyboard Test", 
-                 reply_markup=reply_markup)
+                 text="Custom Keyboard Test", reply_markup=reply_markup)
     else:
         responseText = get_help_text()
         sendMessage(chatID, responseText, False)
