@@ -4,3 +4,4 @@ requests==2.20.0
 tabulate==0.8.2
 chatbase==0.2
 timeago==1.0.13
+python-telegram-bot==12.6.1
