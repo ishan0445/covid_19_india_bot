@@ -4,6 +4,11 @@ from tabulate import tabulate
 from flask import request
 import telegram
 
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import Updater, CommandHandler, CallbackQueryHandler
+
+
+
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
@@ -11,6 +16,26 @@ bot_token = os.environ['BOT_TOKEN']
 chatbase_token = os.environ['CHATBASE_TOKEN']
 
 bot = telegram.Bot(token=bot_token)
+updater = Updater(bot_token, use_context=True)
+
+
+def button(update, context):
+    query = update.callback_query
+
+    # CallbackQueries need to be answered, even if no notification to the user is needed
+    # Some clients may have trouble otherwise. See https://core.telegram.org/bots/api#callbackquery
+    query.answer()
+
+    query.edit_message_text(text="Selected option: {}".format(query.data))
+
+updater.dispatcher.add_handler(CallbackQueryHandler(button))
+
+updater.start_polling()
+
+# Run the bot until the user presses Ctrl-C or the process receives SIGINT,
+# SIGTERM or SIGABRT
+updater.idle()
+
 
 
 def Sort(sub_li):
@@ -248,6 +273,8 @@ def getStats():
         except KeyError:
             print(f"KeyError Encountered")
             return ''
+    elif 'callback_query' in json_data.keys():
+        return ''
     if chatID < 0:
         print('BLOCKED: '+json_data)
         return 'Blocked groups!!!'
