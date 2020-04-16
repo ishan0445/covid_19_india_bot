@@ -1,43 +1,23 @@
-import requests, flask, os, json, timeago
+import requests, os, json, timeago, logging
 from datetime import datetime
 from tabulate import tabulate
-from flask import request
-import telegram
-
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Updater, CommandHandler, CallbackQueryHandler
+from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, MessageHandler, Filters, InlineQueryHandler
+
+# Enable logging
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    level=logging.INFO)
+
+logger = logging.getLogger(__name__)
 
 
+# Utility Functions
+def get_json_statewise():
+    url = 'https://api.covid19india.org/data.json'
+    resp = requests.get(url)
+    json_statewise = resp.json()
 
-app = flask.Flask(__name__)
-app.config["DEBUG"] = True
-
-bot_token = os.environ['BOT_TOKEN']
-chatbase_token = os.environ['CHATBASE_TOKEN']
-
-bot = telegram.Bot(token=bot_token)
-# updater = Updater(bot_token, use_context=True)
-
-
-def button(update, context):
-    query = update.callback_query
-
-    # CallbackQueries need to be answered, even if no notification to the user is needed
-    # Some clients may have trouble otherwise. See https://core.telegram.org/bots/api#callbackquery
-    query.answer()
-
-    query.edit_message_text(text="Selected option: {}".format(query.data))
-
-# updater.dispatcher.add_handler(CallbackQueryHandler(button))
-# updater.dispatcher.add_handler(CommandHandler('help', help))
-
-# updater.start_polling()
-
-# # Run the bot until the user presses Ctrl-C or the process receives SIGINT,
-# # SIGTERM or SIGABRT
-# updater.idle()
-
-
+    return json_statewise
 
 def Sort(sub_li):
     return(sorted(sub_li, key = lambda x: x[1], reverse=True)) 
@@ -65,6 +45,7 @@ def get_stats_overall(json_statewise):
 
     return responseText
 
+
 def get_stats_statewise(json_statewise):
     print('In method get_stats_statewise():')
     responseText = '<b>State Wise Cases in India:</b><pre>\n'
@@ -86,8 +67,165 @@ def get_stats_statewise(json_statewise):
     responseText += '\n</pre>'
     return responseText
 
-def get_stats_district_wise(json_district_wise, state):
-    print('In method get_stats_district_wise():')
+def get_button_list():
+    button_list = [
+            [InlineKeyboardButton("Andaman and Nicobar Islands", callback_data="Andaman and Nicobar Islands"),
+            InlineKeyboardButton("Andhra Pradesh", callback_data="Andhra Pradesh")],
+            [InlineKeyboardButton("Arunachal Pradesh", callback_data="Arunachal Pradesh"),
+            InlineKeyboardButton("Assam", callback_data="Assam")],
+            [InlineKeyboardButton("Bihar", callback_data="Bihar"),
+            InlineKeyboardButton("Chandigarh", callback_data="Chandigarh")],
+            [InlineKeyboardButton("Chhattisgarh", callback_data="Chhattisgarh"),
+            InlineKeyboardButton("Dadra and Nagar Haveli", callback_data="Dadra and Nagar Haveli")],
+            [InlineKeyboardButton("Delhi", callback_data="Delhi"),
+            InlineKeyboardButton("Goa", callback_data="Goa")],
+            [InlineKeyboardButton("Gujarat", callback_data="Gujarat"),
+            InlineKeyboardButton("Haryana", callback_data="Haryana")],
+            [InlineKeyboardButton("Himachal Pradesh", callback_data="Himachal Pradesh"),
+            InlineKeyboardButton("Jammu and Kashmir", callback_data="Jammu and Kashmir")],
+            [InlineKeyboardButton("Jharkhand", callback_data="Jharkhand"),
+            InlineKeyboardButton("Karnataka", callback_data="Karnataka")],
+            [InlineKeyboardButton("Kerala", callback_data="Kerala"),
+            InlineKeyboardButton("Ladakh", callback_data="Ladakh")],
+            [InlineKeyboardButton("Madhya Pradesh", callback_data="Madhya Pradesh"),
+            InlineKeyboardButton("Maharashtra", callback_data="Maharashtra")],
+            [InlineKeyboardButton("Manipur", callback_data="Manipur"),
+            InlineKeyboardButton("Mizoram", callback_data="Mizoram")],
+            [InlineKeyboardButton("Nagaland", callback_data="Nagaland"),
+            InlineKeyboardButton("Odisha", callback_data="Odisha")],
+            [InlineKeyboardButton("Puducherry", callback_data="Puducherry"),
+            InlineKeyboardButton("Punjab", callback_data="Punjab")],
+            [InlineKeyboardButton("Rajasthan", callback_data="Rajasthan"),
+            InlineKeyboardButton("Tamil Nadu", callback_data="Tamil Nadu")],
+            [InlineKeyboardButton("Telangana", callback_data="Telangana"),
+            InlineKeyboardButton("Tripura", callback_data="Tripura")],
+            [InlineKeyboardButton("Uttar Pradesh", callback_data="Uttar Pradesh"),
+            InlineKeyboardButton("Uttarakhand", callback_data="Uttarakhand")],
+            [InlineKeyboardButton("West Bengal", callback_data="West Bengal")]
+        ]
+    return button_list
+
+
+# Define a few command handlers. These usually take the two arguments update and
+# context. Error handlers also receive the raised TelegramError object in error.
+def start(update, context):
+    """Send a message when the command /start is issued."""
+    update.message.reply_text('Hi!')
+
+def help(update, context):
+    print('In method get_help_text():')
+    responseText = '''This bot will give latest stats of COVID-19 Cases in India. 
+The data is collected from :
+1) covid19india.org
+2) NovelCOVID
+
+You can control me by sending these commands:
+/help - to see this help.
+/get_full_stats - Get overall and statewise stats.
+/get_state_wise - Get statewise stats.
+/get_overall - Get overall stats.
+/get_helpline - Get helpline numbers.
+/get_district_wise - Get district wise stats for a state.
+/gdw - Short for command /get_district_wise.
+/get_country_stats - Gets top 20 countries by no. of confirmed cases.
+/get_updates - Get latest updates from India.
+
+
+Report Bugs: @ishan0445
+made with ❤️ after washing 🧼👐 hands.
+'''
+    update.message.reply_text(responseText)
+
+
+def echo(update, context):
+    """Echo the user message."""
+    update.message.reply_text(update.message.text)
+
+
+def error(update, context):
+    """Log Errors caused by Updates."""
+    logger.warning('Update "%s" caused error "%s"', update, context.error)
+
+def get_full_stats(update, context):
+    json_statewise = get_json_statewise()
+    responseText = get_stats_overall(json_statewise)
+    responseText += "\n\n\n" + get_stats_statewise(json_statewise)
+    update.message.reply_html(responseText)
+
+def get_state_wise(update, context):
+    json_statewise = get_json_statewise()
+    responseText = get_stats_statewise(json_statewise)
+    update.message.reply_html(responseText)
+
+def get_overall(update, context):
+    json_statewise = get_json_statewise()
+    responseText = get_stats_overall(json_statewise)
+    update.message.reply_html(responseText)
+
+
+def get_helpline(update, context):
+    responseText = '''Please visit the fillowing page for official helpline numbers:
+https://www.mohfw.gov.in/pdf/coronvavirushelplinenumber.pdf
+'''
+    update.message.reply_html(responseText)
+
+def get_latest_updates(update, context):
+    url = 'https://api.covid19india.org/updatelog/log.json'
+    resp = requests.get(url)
+    json_data = resp.json()[-7:]
+    json_data.reverse()
+    responseText = """
+<b>Latest Updates:</b>
+"""
+    for el in json_data:
+        now = datetime.now()
+        date = datetime.fromtimestamp(el['timestamp'])
+        ago = timeago.format(date, now)
+        responseText += el['update'] + "- <i>" + ago + "</i>\n\n"
+
+    update.message.reply_html(responseText)
+
+
+def get_country_stats(update, context):
+    limit = 20
+    sortBy='cases'
+
+    url = 'https://corona.lmao.ninja/countries?sort='+sortBy
+    resp = requests.get(url)
+    json_countries = resp.json()[:limit]
+    responseText = '<b>🌏Top '+str(limit)+' countries by no. of comfirmed cases:</b>\n<pre>'
+    respList = []
+    for ct in json_countries:
+        country = ct['country']
+        cases = ct['cases']
+        deaths = ct['deaths']
+
+        respList.append([country.replace(' ', '\n'), cases, deaths])
+
+
+    respList = [['COUNTRY', 'CNFM', 'DTHS']] + respList
+    responseText += tabulate(respList, tablefmt='grid')
+
+    responseText+= '\n</pre>'
+
+    update.message.reply_html(responseText)
+
+def get_stats_district_wise(update, context):
+    
+    keyboard = get_button_list()
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    update.message.reply_html('Please choose:', reply_markup=reply_markup)
+
+def button(update, context):
+    query = update.callback_query
+
+    state = query.data.lower()
+    url = 'https://api.covid19india.org/state_district_wise.json'
+    resp = requests.get(url)
+    json_district_wise = resp.json()
+    
     json_district_wise =  {k.lower(): v for k, v in json_district_wise.items()}
     if state not in json_district_wise.keys():
         return ''
@@ -111,240 +249,60 @@ def get_stats_district_wise(json_district_wise, state):
 
     responseText += tabulate(respList, tablefmt='grid')
     responseText += '\n</pre>'
-    return responseText
-
-def get_top_country_stats(limit ,sortBy='cases'):
-    url = 'https://corona.lmao.ninja/countries?sort='+sortBy
-    resp = requests.get(url)
-    json_countries = resp.json()[:limit]
-    responseText = '<b>🌏Top '+str(limit)+' countries by no. of comfirmed cases:</b>\n<pre>'
-    respList = []
-    for ct in json_countries:
-        country = ct['country']
-        cases = ct['cases']
-        deaths = ct['deaths']
-
-        respList.append([country.replace(' ', '\n'), cases, deaths])
 
 
-    respList = [['COUNTRY', 'CNFM', 'DTHS']] + respList
-    responseText += tabulate(respList, tablefmt='grid')
+    # CallbackQueries need to be answered, even if no notification to the user is needed
+    # Some clients may have trouble otherwise. See https://core.telegram.org/bots/api#callbackquery
+    query.answer()
 
-    responseText+= '\n</pre>'
+    query.edit_message_text(responseText,parse_mode='html')
 
-    return responseText
+def main():
+    """Start the bot."""
+    # Create the Updater and pass it your bot's token.
+    # Make sure to set use_context=True to use the new context based callbacks
+    # Post version 12 this will no longer be necessary
+    TOKEN = os.environ['BOT_TOKEN']
+    PORT = int(os.environ.get('PORT', '8443'))
+    updater = Updater(TOKEN, use_context=True)
 
-def get_help_text():
-    print('In method get_help_text():')
-    responseText = '''This bot will give latest stats of COVID-19 Cases in India. 
-The data is collected from :
-1) covid19india.org
-2) NovelCOVID
+    # Get the dispatcher to register handlers
+    dp = updater.dispatcher
 
-You can control me by sending these commands:
-/help - to see this help.
-/get_full_stats - Get overall and statewise stats.
-/get_state_wise - Get statewise stats.
-/get_overall - Get overall stats.
-/get_helpline - Get helpline numbers.
+    # on different commands - answer in Telegram
+    dp.add_handler(CommandHandler("start", start))
+    dp.add_handler(CommandHandler("help", help))
+    dp.add_handler(CommandHandler("get_full_stats", get_full_stats))
+    dp.add_handler(CommandHandler("get_state_wise", get_state_wise))
+    dp.add_handler(CommandHandler("get_overall", get_overall))
+    dp.add_handler(CommandHandler("get_helpline", get_helpline))
+    dp.add_handler(CommandHandler("get_updates", get_latest_updates))
+    dp.add_handler(CommandHandler("get_country_stats", get_country_stats))
+    dp.add_handler(CommandHandler("gdw", get_stats_district_wise))
+    dp.add_handler(CommandHandler("get_district_wise", get_stats_district_wise))
 
-/get_district_wise state - Get district wise stats for a state.
-/gdw state - Short for command /get_district_wise.
-Ex: /gdw Madhya Pradesh
+    # on noncommand i.e message - echo the message on Telegram
+    dp.add_handler(CallbackQueryHandler(button))
 
-/get_country_stats - Gets top 20 countries by no. of confirmed cases.
+    # on noncommand i.e message - echo the message on Telegram
+    dp.add_handler(MessageHandler(Filters.text, echo))
 
-/get_updates = Get latest updates from India.
+    # log all errors
+    dp.add_error_handler(error)
 
-
-Report Bugs: @ishan0445
-made with ❤️ after washing 🧼👐 hands.
-'''
-    return responseText
-
-def splitResponse(responseText):
-    respList = responseText.split('\n\n')
+    # Start the Bot
     
-    n = 10
-    final = [respList[i * n:(i + 1) * n] for i in range((len(respList) + n - 1) // n )]
-
-    return final
-
-
-
-def sendMessage(chatID, responseText, do_split):
-    print('In method sendMessage():')
-    url = 'https://api.telegram.org/bot'+ bot_token +'/sendMessage'
-    if do_split:
-        listResponse = splitResponse(responseText)
-        
-        for l in listResponse:
-            newResp = '\n\n'.join(l)
-            resp = requests.post(url, json= {"chat_id": chatID, "text": newResp , "parse_mode":"html"})
-    else:
-        resp = requests.post(url, json= {"chat_id": chatID, "text": responseText , "parse_mode":"html"})
-    print(resp.json())
-
-def sendPhoto(chatID, responseText):
-    print('In method sendPhoto:')
-    url = 'https://api.telegram.org/bot'+ bot_token +'/sendPhoto'
-    resp = requests.post(url, json= {"chat_id": chatID, "caption": responseText , "parse_mode":"html", "photo":"AgACAgUAAxkBAAPdXndhK8i3FUI7cFv8PfBYnX-bM3AAAuKpMRukLrhX11QX20YEUJD9qCUzAAQBAAMCAANtAAMh3wQAARgE"})
-    print(resp.json())
     
+    updater.start_webhook(listen="0.0.0.0",
+                      port=PORT,
+                      url_path=TOKEN)
+    updater.bot.set_webhook("https://tranquil-cove-14056.herokuapp.com/" + TOKEN)
 
+    # Run the bot until you press Ctrl-C or the process receives SIGINT,
+    # SIGTERM or SIGABRT. This should be used most of the time, since
+    # start_polling() is non-blocking and will stop the bot gracefully.
+    updater.idle()
 
-def get_json_statewise():
-    url = 'https://api.covid19india.org/data.json'
-    resp = requests.get(url)
-    json_statewise = resp.json()
-
-    return json_statewise
-
-
-def send_analitics(command, user_id):
-    resp = requests.post('https://chatbase.com/api/message', json= {
-    "api_key": chatbase_token,
-    "type": "user",
-    "platform": "telegram",
-    "message": f"{command} is called",
-    "intent": "command",
-    "version": "1.1",
-    "user_id": user_id
-    })
-
-    print('ChatBase Resp: ' + str(resp.json()))
-
-def get_latest_updates():
-    url = 'https://api.covid19india.org/updatelog/log.json'
-    resp = requests.get(url)
-    json_data = resp.json()[-7:]
-    json_data.reverse()
-    resonseText = """
-<b>Latest Updates:</b>
-"""
-    for el in json_data:
-        now = datetime.now()
-        date = datetime.fromtimestamp(el['timestamp'])
-        ago = timeago.format(date, now)
-        resonseText += el['update'] + "- <i>" + ago + "</i>\n\n"
-
-    return resonseText
-
-def build_menu(buttons,
-               n_cols,
-               header_buttons=None,
-               footer_buttons=None):
-    menu = [buttons[i:i + n_cols] for i in range(0, len(buttons), n_cols)]
-    if header_buttons:
-        menu.insert(0, [header_buttons])
-    if footer_buttons:
-        menu.append([footer_buttons])
-    return menu
-
-
-def under_maintanance():
-    return '''Sorry under maintenance!!!'''
-
-
-
-
-# def helpNEW(update, context):
-#     update.message.reply_text(get_help_text())
-
-# updater.dispatcher.add_handler(CommandHandler('help', helpNEW))
-    
-#--------------
-# API ROUTES
-#--------------
-@app.route('/', methods=['POST'])
-def getStats():
-    print('In method getStats():')
-    json_data = request.get_json()
-    print(json_data)
-    chatID = ''
-    command = ''
-    user_id = ''
-
-    # Handeling message type
-    if 'message' in json_data.keys():
-        try:
-            chatID = json_data['message']['chat']['id']
-            command = json_data['message']['text'].lower()
-            user_id = str(json_data['message']['from']['id'])
-        except KeyError:
-            print(f"KeyError Encountered")
-            return ''
-    elif 'edited_message' in json_data.keys():
-        try:
-            chatID = json_data['edited_message']['chat']['id']
-            command = json_data['edited_message']['text'].lower()
-            user_id = str(json_data['edited_message']['from']['id'])
-        except KeyError:
-            print(f"KeyError Encountered")
-            return ''
-    elif 'callback_query' in json_data.keys():
-        return ''
-    if chatID < 0:
-        print('BLOCKED: '+json_data)
-        return 'Blocked groups!!!'
-
-    send_analitics(command, user_id)
-    
-    responseText = ''
-  
-    if command == '/get_full_stats': 
-        json_statewise = get_json_statewise()
-        responseText = get_stats_overall(json_statewise)
-        responseText += "\n\n\n" + get_stats_statewise(json_statewise)
-        sendMessage(chatID, responseText, False)
-    elif command == '/get_state_wise':
-        json_statewise = get_json_statewise()
-        responseText = get_stats_statewise(json_statewise)
-        sendMessage(chatID, responseText, False)
-    elif command == '/get_overall':
-        json_statewise = get_json_statewise()
-        responseText = get_stats_overall(json_statewise)
-        sendMessage(chatID, responseText, False)
-    elif command == '/get_helpline':
-        sendPhoto(chatID, responseText)
-    elif command.startswith('/get_district_wise') or command.startswith('/gdw'):
-        cmd_split = command.strip().split(' ',1)
-        state = ''
-        if len(cmd_split) == 2:
-            url = 'https://api.covid19india.org/state_district_wise.json'
-            resp = requests.get(url)
-            json_district_wise = resp.json()
-            state = cmd_split[1].lower()
-            responseText = get_stats_district_wise(json_district_wise, state)
-        else:
-            responseText = '''invalid command!!
-Try:
-/gdw state
-or
-/get_district_wise state
-'''
-        if not responseText.strip():
-            responseText = 'No data for state: ' + state
-        sendMessage(chatID, responseText, True)
-    elif command.startswith('/get_country_stats'):
-        responseText = get_top_country_stats(20, sortBy='cases')
-        sendMessage(chatID,responseText, False)
-    elif command.startswith('/get_updates'):
-        responseText = get_latest_updates()
-        sendMessage(chatID,responseText, False)
-    elif command.startswith('/test0445'):
-        button_list = [
-            telegram.InlineKeyboardButton("col1", callback_data='col1-dta'),
-            telegram.InlineKeyboardButton("col2", callback_data='col2-dta'),
-            telegram.InlineKeyboardButton("row 2", callback_data='row2-dta')
-        ]
-        reply_markup = telegram.InlineKeyboardMarkup(build_menu(button_list, n_cols=2))
-        bot.send_message(chat_id=chatID, 
-                 text="Custom Keyboard Test", reply_markup=reply_markup)
-    else:
-        responseText = get_help_text()
-        sendMessage(chatID, responseText, False)
-    return responseText
 
 if __name__ == '__main__':
-    app.run()
+    main()
