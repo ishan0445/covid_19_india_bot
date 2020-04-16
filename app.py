@@ -10,7 +10,7 @@ app.config["DEBUG"] = True
 bot_token = os.environ['BOT_TOKEN']
 chatbase_token = os.environ['CHATBASE_TOKEN']
 
-bot = telegram.Bot(token='TOKEN')
+bot = telegram.Bot(token=bot_token)
 
 
 def Sort(sub_li):
