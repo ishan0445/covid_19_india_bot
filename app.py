@@ -16,7 +16,7 @@ bot_token = os.environ['BOT_TOKEN']
 chatbase_token = os.environ['CHATBASE_TOKEN']
 
 bot = telegram.Bot(token=bot_token)
-updater = Updater(bot_token, use_context=True)
+# updater = Updater(bot_token, use_context=True)
 
 
 def button(update, context):
@@ -28,14 +28,14 @@ def button(update, context):
 
     query.edit_message_text(text="Selected option: {}".format(query.data))
 
-updater.dispatcher.add_handler(CallbackQueryHandler(button))
-updater.dispatcher.add_handler(CommandHandler('help', help))
+# updater.dispatcher.add_handler(CallbackQueryHandler(button))
+# updater.dispatcher.add_handler(CommandHandler('help', help))
 
-updater.start_polling()
+# updater.start_polling()
 
-# Run the bot until the user presses Ctrl-C or the process receives SIGINT,
-# SIGTERM or SIGABRT
-updater.idle()
+# # Run the bot until the user presses Ctrl-C or the process receives SIGINT,
+# # SIGTERM or SIGABRT
+# updater.idle()
 
 
 
@@ -248,10 +248,10 @@ def under_maintanance():
 
 
 
-def helpNEW(update, context):
-    update.message.reply_text(get_help_text())
+# def helpNEW(update, context):
+#     update.message.reply_text(get_help_text())
 
-updater.dispatcher.add_handler(CommandHandler('help', helpNEW))
+# updater.dispatcher.add_handler(CommandHandler('help', helpNEW))
     
 #--------------
 # API ROUTES
