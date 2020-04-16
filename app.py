@@ -10,8 +10,6 @@ bot_token = os.environ['BOT_TOKEN']
 chatbase_token = os.environ['CHATBASE_TOKEN']
 
 
-
-
 def Sort(sub_li):
     return(sorted(sub_li, key = lambda x: x[1], reverse=True)) 
 
@@ -30,11 +28,11 @@ def get_stats_overall(json_statewise):
 
 
 
-    responseText = f'''<b>Cases in India:</b>
-Confirmed Cases: <b>{confirmed} [ +{confirmeddelta} ]</b>
-Recovered Cases: <b>{recovered} [ +{recovereddelta} ]</b>
-Deaths: <b>{deaths} [ +{deceaseddelta} ]</b>
-Active Cases: <b>{active}</b>'''
+    responseText = f'''<b>Cases in India 🇮🇳:</b>
+🦠Confirmed Cases: <b>{confirmed} [ +{confirmeddelta} ]</b>
+💪🏼Recovered Cases: <b>{recovered} [ +{recovereddelta} ]</b>
+💀Deaths: <b>{deaths} [ +{deceaseddelta} ]</b>
+🏥Active Cases: <b>{active}</b>'''
 
     return responseText
 
@@ -54,7 +52,7 @@ def get_stats_statewise(json_statewise):
     
 
     respList = Sort(respList)
-    respList = [['STATE','C', 'R', 'D' ]] + respList
+    respList = [['STATE','🦠', '💪🏼', '💀' ]] + respList
     responseText += tabulate(respList, tablefmt='grid')
     responseText += '\n</pre>'
     return responseText
@@ -95,7 +93,7 @@ def get_top_country_stats(limit ,sortBy='cases'):
     url = 'https://corona.lmao.ninja/countries?sort='+sortBy
     resp = requests.get(url)
     json_countries = resp.json()[:limit]
-    responseText = '<b>Top '+str(limit)+' countries by no. of comfirmed cases:</b>\n<pre>'
+    responseText = '<b>🌏Top '+str(limit)+' countries by no. of comfirmed cases:</b>\n<pre>'
     respList = []
     for ct in json_countries:
         country = ct['country']
