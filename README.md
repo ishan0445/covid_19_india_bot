@@ -31,8 +31,10 @@ You can control the bot by sending these commands:
 
 >**/get_helpline** - Get helpline numbers
 
->**/get_district_wise ** - Get district wise stats for a state
+>**/get_district_wise** - Get district wise stats for a state
 
 >**/gdw** - Short for command /get_district_wise.
 
->**/get_country_stats** - Gets top 20 countries by no. of confirmed cases
+>**/get_country_stats** - Gets top 20 countries by no. of confirmed cases.
+
+>**/get_updates** - Get latest updtes from India.
