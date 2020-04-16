@@ -2,12 +2,15 @@ import requests, flask, os, json, timeago
 from datetime import datetime
 from tabulate import tabulate
 from flask import request
+import telegram
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
 bot_token = os.environ['BOT_TOKEN']
 chatbase_token = os.environ['CHATBASE_TOKEN']
+
+bot = telegram.Bot(token='TOKEN')
 
 
 def Sort(sub_li):
@@ -282,6 +285,13 @@ or
     elif command.startswith('/get_updates'):
         responseText = get_latest_updates()
         sendMessage(chatID,responseText, False)
+    elif command.startswith('/test0445'):
+        custom_keyboard = [['top-left', 'top-right'], 
+                   ['bottom-left', 'bottom-right']]
+        reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard)
+        bot.send_message(chat_id=chatID, 
+                 text="Custom Keyboard Test", 
+                 reply_markup=reply_markup)
     else:
         responseText = get_help_text()
         sendMessage(chatID, responseText, False)
