@@ -66,24 +66,19 @@ def get_stats_district_wise(json_district_wise, state):
     responseText = '<b>Cases in '+state+':</b><pre>\n'
     respList = []
     cnfTot = 0
-    # recTot = 0
-    # detTot = 0
     
     for dt in json_district_wise[state]['districtData']:
         confirmed = json_district_wise[state]['districtData'][dt]['confirmed']
+        cnfDelta = json_district_wise[state]['districtData'][dt]['delta']['confirmed']
         cnfTot += confirmed
-        # recovered = json_district_wise[state]['districtData'][dt]['recovered']
-        # recTot += recovered
-        # deaths = json_district_wise[state]['districtData'][dt]['deaths']
-        # detTot += deaths
 
         if confirmed != 0:
-            respList.append([dt.replace(' ', '\n'), confirmed]) #, recovered, deaths] )
+            respList.append([dt.replace(' ', '\n'), str(confirmed) + ("" if cnfDelta == 0 else " [+"+str(cnfDelta)+"]") ])
     
 
     respList = Sort(respList)
     respList = [['DISTRICT','CONFIRMED' ]] + respList + [['Total',cnfTot]]
-    # respList = [['DISTRICT','C', 'R', 'D' ]] + respList + [['Total',cnfTot,recTot,detTot]]
+    
 
     responseText += tabulate(respList, tablefmt='grid')
     responseText += '\n</pre>'
